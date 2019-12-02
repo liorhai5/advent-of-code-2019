@@ -13,4 +13,4 @@ const text = fs.readFileSync(path + `/input.txt`)
     .filter(s => s.length > 0);
 
 console.log('Result:');
-console.log(solver(text));
+console.log(solver.solve(text));

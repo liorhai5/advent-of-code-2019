@@ -1,8 +1,10 @@
+const {getFuelRequirement} = require('./solve1');
+
 const solve = input => {
-    let breakdown = input.map(x => parseInt(x.trim(), 10));
+    let modules = input.map(x => parseInt(x.trim(), 10));
     let sum = 0;
-    for (let i = 0; i < breakdown.length; i++) {
-        let fuelRequirement = getFuelRequirement(breakdown[i]);
+    for (let i = 0; i < modules.length; i++) {
+        let fuelRequirement = getFuelRequirement(modules[i]);
         while (fuelRequirement > 0) {
             sum += fuelRequirement;
             fuelRequirement = getFuelRequirement(fuelRequirement);
@@ -11,6 +13,8 @@ const solve = input => {
     return sum;
 };
 
-const getFuelRequirement = mass => Math.floor(mass / 3) - 2;
+module.exports = {
+    solve
+};
 
-module.exports = solve;
+// RESULT: 5183030
