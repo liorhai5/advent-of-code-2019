@@ -35,7 +35,7 @@ const findIntersections = (pointsPath1, pointsPath2) => {
     return [...new Set(pointsPath1)].filter(x => setB.has(x));
 };
 
-const manhattenDistance = (x1, y1, x2, y2) => {
+const manhattanDistance = (x1, y1, x2, y2) => {
     return Math.abs(x2 - x1) + Math.abs(y2 - y1);
 };
 
@@ -43,7 +43,7 @@ const findShortestDistance = intersections => {
     let minDist = 999999999;
     for (let i = 0; i < intersections.length; i++) {
         const cords = intersections[i].split(',');
-        minDist = Math.min(minDist, manhattenDistance(0, 0, parseInt(cords[0], 10), parseInt(cords[1], 10)));
+        minDist = Math.min(minDist, manhattanDistance(0, 0, parseInt(cords[0], 10), parseInt(cords[1], 10)));
     }
     return minDist;
 };
