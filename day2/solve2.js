@@ -1,6 +1,6 @@
 const {solveForIntegers} = require('./solve1');
 
-const solve = (input) => {
+const solve = input => {
     const expected = 19690720;
     let n, v = 0;
     loop: for (n = 0; n < 100; n++) {

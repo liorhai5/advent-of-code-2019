@@ -1,11 +1,11 @@
-const solve = (input) => {
+const solve = input => {
     let integers = input[0].split(',').map(x => parseInt(x.trim(), 10));
     integers[1] = 12;
     integers[2] = 2;
     return solveForIntegers(integers);
 };
 
-const solveForIntegers = (integers) => {
+const solveForIntegers = integers => {
     let index = 0;
     while (index < integers.length) {
         let pos1 = integers[index + 1];

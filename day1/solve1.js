@@ -1,4 +1,4 @@
-const solve = (input) => {
+const solve = input => {
     let modules = input.map(x => parseInt(x.trim(), 10));
     let sum = 0;
     for (let i = 0; i < modules.length; i++) {

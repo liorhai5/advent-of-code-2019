@@ -1,4 +1,4 @@
-const solve = (input) => {
+const solve = input => {
     const path1 = input[0].split(',');
     const path2 = input[1].split(',');
     const pointsPath1 = pathToPoints(path1);
