@@ -36,14 +36,10 @@ const solveForIntegers = integers => {
             interval = 2;
         } else if (instruction == 5) { // jump if true
             interval = 3;
-            if (val1 != 0) {
-                jumpTo = val2;
-            }
+            jumpTo = val1 != 0 ? val2 : -1;
         } else if (instruction == 6) { // jump if false
             interval = 3;
-            if (val1 == 0) {
-                jumpTo = val2;
-            }
+            jumpTo = val1 == 0 ? val2 : -1;
         } else if (instruction == 7) { // less than
             integers[target] = val1 < val2 ? 1 : 0;
         } else if (instruction == 8) { // equal
@@ -51,6 +47,7 @@ const solveForIntegers = integers => {
         } else if (integers[index] == 99) { // break
             index = integers.length;
         }
+        
         if (jumpTo >=0 ) {
             index = jumpTo;
         } else {
