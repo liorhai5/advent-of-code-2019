@@ -47,7 +47,7 @@ const solveForIntegers = integers => {
         } else if (integers[index] == 99) { // break
             index = integers.length;
         }
-        
+
         if (jumpTo >=0 ) {
             index = jumpTo;
         } else {
