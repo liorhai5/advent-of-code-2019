@@ -1,14 +1,40 @@
-const {getInstructionAndModes} = require('./solve1');
+const {getPermutations} = require('./solve1');
+const {getInstructionAndModes} = require('../day5/solve1');
 
 const solve = input => {
-    let integers = input[0].split(',').map(x => parseInt(x.trim(), 10));
-    return solveForIntegers(integers, [5]);
+    let maxThrust = 0;
+    const sequences = getPermutations([5,6,7,8,9]);
+    for (let i = 0; i < sequences.length; i++) {
+        let integers = input[0].split(',').map(x => parseInt(x.trim(), 10));
+        maxThrust = Math.max(maxThrust, solveForSequence(integers, sequences[i]))
+    }
+    return maxThrust;
 };
 
-const solveForIntegers = (integers, inputs) => {
-    let index = 0;
+const solveForSequence = (integers, sequence) => {
+    let lastInput = -1;
+    let output = 0;
+    let configIndex = 0;
+    const configs = [];
+    for (let amp = 0; amp < 5; amp++) {
+        configs.push({integers: integers.slice(), index: 0});
+    }
+    while (output !== -1) {
+        const inputs = lastInput === -1 ? [sequence[configIndex], output] : [output];
+        output = solveForIntegers(configs[configIndex], inputs);
+        if (configIndex === 4) {
+            lastInput = output;
+        }
+        configIndex = (configIndex + 1) % 5;
+    }
+
+    return lastInput;
+};
+
+const solveForIntegers = (config, inputs) => {
+    let index = config.index;
+    let integers = config.integers;
     let inputIndex = 0;
-    const outputs = [];
 
     while (index < integers.length) {
         const {instruction, modes} = getInstructionAndModes(integers[index] + "");
@@ -35,8 +61,9 @@ const solveForIntegers = (integers, inputs) => {
             interval = 2;
         } else if (instruction == 4) { // output
             target = integers[index + 1];
-            outputs.push(integers[target]);
             interval = 2;
+            config.index = index + interval;
+            return integers[target];
         } else if (instruction == 5) { // jump if true
             interval = 3;
             jumpTo = val1 != 0 ? val2 : -1;
@@ -51,19 +78,19 @@ const solveForIntegers = (integers, inputs) => {
             index = integers.length;
         }
 
-        if (jumpTo >=0 ) {
+        if (jumpTo >= 0 ) {
             index = jumpTo;
         } else {
             index += interval;
         }
     }
-    return outputs[outputs.length - 1];
+    return -1;
 };
+
 
 module.exports = {
-    solve,
-    solveForIntegers
+    solve
 };
 
-// RESULT: 236453
+// RESULT: 21844737
 
