@@ -1,9 +1,8 @@
 const fs = require('fs');
 
 const solveUtils = (day, task) => {
-    const path = `./day${day}`;
-    const solver = require(`${path}/solve${task}`);
-    const text = fs.readFileSync(path + `/input.txt`)
+    const solver = require(`./../day${day}/solve${task}`);
+    const text = fs.readFileSync(`${__dirname}/../day${day}/input.txt`)
         .toString()
         .split('\n')
         .map(s => s.replace(/\r$/, ''))

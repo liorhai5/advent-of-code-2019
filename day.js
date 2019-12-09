@@ -1,4 +1,4 @@
-const {solve}= require('./solveUtils');
+const {solve} = require('./common/solveUtils');
 
 const args = process.argv.slice(2);
 let _day = Number(args[0]);

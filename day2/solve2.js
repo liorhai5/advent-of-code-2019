@@ -1,4 +1,4 @@
-const {runIntCode} = require('../intCode');
+const {runIntCode} = require('../common/intCode');
 
 const solve = input => {
     const expected = 19690720;
