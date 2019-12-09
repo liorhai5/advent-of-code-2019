@@ -14,16 +14,21 @@ const runIntCode = (config, inputs) => {
             modes.unshift(0);
         }
 
-        let pos1 = getVal(integers, index + 1);
-        let pos2 = getVal(integers, index + 2);
+        // POSITION - if the parameter is 50, its value is the value stored at address 50 in memory
+        // IMMEDIATE - if the parameter is 50, its value is simply 50
+        // RELATIVE - if base is 50, parameter is -7, its value is the value stored at address 43 in memory
 
-        let val1 = getValByMode(integers, pos1, modes[modes.length - 1], base);
-        let val2 = getValByMode(integers, pos2, modes[modes.length - 2], base);
-        // let target = integers[index + getIncrement(instruction)];
-        // let target = getValByMode(integers, posT, modes[0], base);
-        let target = getTarget(integers, index, instruction, modes[0], base);
+        let param1 = getVal(integers, index + 1);
+        let param2 = getVal(integers, index + 2);
+        let val1 = getValByMode(integers, param1, modes[modes.length - 1], base);
+        let val2 = getValByMode(integers, param2, modes[modes.length - 2], base);
 
-        console.log(`opt = ${integers[index]}, base = ${base} => instruction = ${instruction}, mode = ${modes[0]}, target = ${target}`);
+        let target = modes[0] === 2 ?
+            getVal(integers, index + interval - 1) + base :
+            getVal(integers, index + interval - 1);
+
+        let paramT = getVal(integers, index + interval - 1);
+        let targetVal = getValByMode(integers, paramT, modes[0], base);
 
         let jumpTo = -1;
 
@@ -59,9 +64,9 @@ const runIntCode = (config, inputs) => {
             integers[target] = val1 == val2 ? 1 : 0;
         }
         else if (instruction == 9) { // change base
-            base += getVal(integers, target);
+            base += targetVal;
         }
-        else if (integers[index] == 99) { // break
+        else if (instruction == 99) { // break
             index = integers.length;
         }
 
@@ -76,13 +81,7 @@ const runIntCode = (config, inputs) => {
     } else if (returnOnOutput) {
         return -1;
     }
-    console.log(outputs)
     return outputs[outputs.length - 1];
-};
-
-const getTarget = (integers, index, instruction, mode, base) => {
-    const increment = getInterval(instruction) - 1;
-    return getValByMode(integers, index + increment, mode, base);
 };
 
 const getInterval = instruction => {
@@ -95,22 +94,17 @@ const getInterval = instruction => {
 
 };
 
-const getValByMode = (integers, pos, mode, base = 0) => {
+const getValByMode = (integers, param, mode, base = 0) => {
     if (mode === 1) {
-        return pos;
+        return param;
     }
     if (mode === 2) {
-        return getVal(integers, pos + base);
+        return getVal(integers, param + base);
     }
-    return getVal(integers, pos);
+    return getVal(integers, param);
 };
 
-const getVal = (arr, index) => {
-    if (arr[index] === undefined) {
-        return 0;
-    }
-    return arr[index];
-};
+const getVal = (arr, index) => arr[index] === undefined ? 0 : arr[index];
 
 const getInstructionAndModes = opt => {
     const instruction = parseInt(opt.slice(opt.length - 2), 10);

@@ -2,10 +2,10 @@ const {runIntCode} = require('../intCode');
 
 const solve = input => {
     let integers = input[0].split(',').map(x => parseInt(x.trim(), 10));
-    return runIntCode({integers, index: 0}, [1]);
+    return runIntCode({integers, index: 0}, [2]);
 };
 
 module.exports = {
     solve,
-    result: 4006117640
+    result: 88231
 };
