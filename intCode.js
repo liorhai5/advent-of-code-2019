@@ -23,7 +23,7 @@ const runIntCode = (config, inputs) => {
         // let target = getValByMode(integers, posT, modes[0], base);
         let target = getTarget(integers, index, instruction, modes[0], base);
 
-        //console.log(`opt = ${integers[index]}, base = ${base} => instruction = ${instruction}, mode = ${modes[0]}, target = ${target}`);
+        console.log(`opt = ${integers[index]}, base = ${base} => instruction = ${instruction}, mode = ${modes[0]}, target = ${target}`);
 
         let jumpTo = -1;
 
