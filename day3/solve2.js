@@ -20,7 +20,6 @@ const findShortestDistance = (pointsPath1, pointsPath2, intersections) => {
 };
 
 module.exports = {
-    solve
+    solve,
+    result: 15622
 };
-
-// RESULT: 15622

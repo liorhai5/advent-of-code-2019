@@ -1,4 +1,4 @@
-const {solveForIntegers} = require('../day5/solve2');
+const {runIntCode} = require('../intCode');
 
 const solve = input => {
     let maxThrust = 0;
@@ -28,16 +28,13 @@ const getPermutations = seq => {
 const solveForSequence = (integers, sequence) => {
     let lastInput = 0;
     for (let amp = 0; amp < 5; amp++) {
-        lastInput = solveForIntegers(integers, [sequence[amp], lastInput]);
+        lastInput = runIntCode({integers, index: 0}, [sequence[amp], lastInput]);
     }
     return lastInput;
 };
 
 module.exports = {
     solve,
-    getPermutations,
-    solveForSequence
+    result: 212460,
+    getPermutations
 };
-
-// RESULT: 212460
-

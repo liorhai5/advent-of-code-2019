@@ -14,7 +14,6 @@ const solve = input => {
 };
 
 module.exports = {
-    solve
+    solve,
+    result: 5183030
 };
-
-// RESULT: 5183030

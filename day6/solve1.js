@@ -30,8 +30,7 @@ const getOrbitsPathFromTo = (fromOrbit, toOrbit, directOrbits) => {
 
 module.exports = {
     solve,
+    result: 224901,
     inputToMap,
     getOrbitsPathFromTo
 };
-
-// RESULT: 224901

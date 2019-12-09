@@ -10,9 +10,10 @@ const solve = input => {
 
 const getFuelRequirement = mass => Math.floor(mass / 3) - 2;
 
+const result = 3457281;
+
 module.exports = {
     solve,
+    result,
     getFuelRequirement
 };
-
-// RESULT: 3457281

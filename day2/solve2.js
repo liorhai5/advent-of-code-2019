@@ -1,4 +1,4 @@
-const {solveForIntegers} = require('./solve1');
+const {runIntCode} = require('../intCode');
 
 const solve = input => {
     const expected = 19690720;
@@ -8,7 +8,7 @@ const solve = input => {
             let integers = input[0].split(',').map(x => parseInt(x.trim(), 10));
             integers[1] = n;
             integers[2] = v;
-            if (solveForIntegers(integers) === expected) {
+            if (runIntCode({integers, index: 0, returnFirstInteger: true}, []) === expected) {
                 break loop;
             }
         }
@@ -17,7 +17,6 @@ const solve = input => {
 };
 
 module.exports = {
-    solve
+    solve,
+    result: 4967
 };
-
-// RESULT: 4967

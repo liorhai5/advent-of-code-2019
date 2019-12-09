@@ -50,8 +50,7 @@ const findShortestDistance = intersections => {
 
 module.exports = {
     solve,
+    result: 273,
     pathToPoints,
     findIntersections
 };
-
-// RESULT: 273

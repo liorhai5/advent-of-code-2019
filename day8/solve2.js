@@ -29,8 +29,12 @@ const print = (layer, cols) => {
 
 
 module.exports = {
-    solve
+    solve,
+    result: 'XXXX XXX  XXXX X  X XXX  \n' +
+            '   X X  X    X X  X X  X \n' +
+            '  X  X  X   X  X  X XXX  \n' +
+            ' X   XXX   X   X  X X  X \n' +
+            'X    X    X    X  X X  X \n' +
+            'XXXX X    XXXX  XX  XXX  '
+    //'ZPZUB'
 };
-
-// RESULT: ZPZUB
-

@@ -36,8 +36,6 @@ const findOccurrencesCount = (pixels, layerIndex, pixelsPerLayer, digit) => {
 
 
 module.exports = {
-    solve
+    solve,
+    result: 1690
 };
-
-// RESULT: 1690
-

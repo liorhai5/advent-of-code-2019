@@ -42,7 +42,6 @@ const isOnlyIncreasingDigits = digits => {
 
 module.exports = {
     solve,
+    result: 1154,
     solveWithValidator
 };
-
-// RESULT: 1154

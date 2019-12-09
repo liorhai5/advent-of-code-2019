@@ -27,7 +27,6 @@ const hasMatchingAdjacentDigits = digits => {
 };
 
 module.exports = {
-    solve
+    solve,
+    result: 750
 };
-
-// RESULT: 750

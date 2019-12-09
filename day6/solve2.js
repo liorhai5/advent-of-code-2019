@@ -22,7 +22,6 @@ const getPathsIntersectionIndexes = (path1, path2) => {
 };
 
 module.exports = {
-    solve
+    solve,
+    result: 334
 };
-
-// RESULT: 334
