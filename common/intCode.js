@@ -14,10 +14,6 @@ const runIntCode = (config, inputs) => {
             modes.unshift(0);
         }
 
-        // POSITION - if the parameter is 50, its value is the value stored at address 50 in memory
-        // IMMEDIATE - if the parameter is 50, its value is simply 50
-        // RELATIVE - if base is 50, parameter is -7, its value is the value stored at address 43 in memory
-
         let param1 = getVal(integers, index + 1);
         let param2 = getVal(integers, index + 2);
         let val1 = getValByMode(integers, param1, modes[modes.length - 1], base);
