@@ -1,3 +1,7 @@
+const POSITION = 0
+const IMMEDIATE = 1;
+const RELATIVE = 2;
+
 const runIntCode = (config, inputs) => {
     let index = config.index;
     let integers = config.integers;
@@ -5,112 +9,126 @@ const runIntCode = (config, inputs) => {
     let returnFirstInteger = config.returnFirstInteger;
     const outputs = [];
     let inputIndex = 0;
-    let base = 0;
+    let base = config.base || 0;
+
     while (index < integers.length) {
-        const {instruction, modes} = getInstructionAndModes(integers[index] + "");
-        let interval = getInterval(instruction);
+        const instruction = (integers[index] + '').split('');
+        const opcode = Number.parseInt([instruction.pop(), instruction.pop()].reverse().join(''));
+        const mode1 = Number.parseInt(instruction.pop() || 0);
+        const mode2 = Number.parseInt(instruction.pop() || 0);
+        const mode3 = Number.parseInt(instruction.pop() || 0);
 
-        while (modes.length < interval - 1) {
-            modes.unshift(0);
+        // add
+        if (opcode == 1) {
+            const value1 = readValue(integers, mode1, integers[index + 1], base);
+            const value2 = readValue(integers, mode2, integers[index + 2], base);
+            const value3 = getWriteIndex(integers, mode3, integers[index + 3], base);
+            integers[value3] = value1 + value2;
+            index += 4;
         }
 
-        let param1 = getVal(integers, index + 1);
-        let param2 = getVal(integers, index + 2);
-        let val1 = getValByMode(integers, param1, modes[modes.length - 1], base);
-        let val2 = getValByMode(integers, param2, modes[modes.length - 2], base);
-
-        let target = modes[0] === 2 ?
-            getVal(integers, index + interval - 1) + base :
-            getVal(integers, index + interval - 1);
-
-        let paramT = getVal(integers, index + interval - 1);
-        let targetVal = getValByMode(integers, paramT, modes[0], base);
-
-        let jumpTo = -1;
-
-        if (instruction == 1) { // add
-            integers[target] = val1 + val2;
+        // multiply
+        else if (opcode == 2) {
+            const value1 = readValue(integers, mode1, integers[index + 1], base);
+            const value2 = readValue(integers, mode2, integers[index + 2], base);
+            const value3 = getWriteIndex(integers, mode3, integers[index + 3], base);
+            integers[value3] = value1 * value2;
+            index += 4;
         }
-        else if (instruction == 2) { // multiply
-            integers[target] = val1 * val2;
-        }
-        else if (instruction == 3) { // input
-            integers[target] = inputs[inputIndex];
+
+        // input
+        else if (opcode == 3) {
+            const value1 = getWriteIndex(integers, mode1, integers[index + 1], base);
+            integers[value1] = inputs[inputIndex];
             if (inputIndex + 1 < inputs.length) {
                 inputIndex++;
             }
-        }
-        else if (instruction == 4) { // output
-            if (returnOnOutput) {
-                config.index = index + interval;
-                return getVal(integers, target);
-            }
-            outputs.push(getVal(integers, target));
-        }
-        else if (instruction == 5) { // jump if true
-            jumpTo = val1 != 0 ? val2 : -1;
-        }
-        else if (instruction == 6) { // jump if false
-            jumpTo = val1 == 0 ? val2 : -1;
-        }
-        else if (instruction == 7) { // less than
-            integers[target] = val1 < val2 ? 1 : 0;
-        }
-        else if (instruction == 8) { // equal
-            integers[target] = val1 == val2 ? 1 : 0;
-        }
-        else if (instruction == 9) { // change base
-            base += targetVal;
-        }
-        else if (instruction == 99) { // break
-            index = integers.length;
+            index += 2;
         }
 
-        if (jumpTo >= 0 ) {
-            index = jumpTo;
-        } else {
-            index += interval;
+        // output
+        else if (opcode == 4) {
+            const value1 = readValue(integers, mode1, integers[index + 1], base);
+            outputs.push(value1);
+            index += 2;
+            if (returnOnOutput) {
+                config.index = index;
+                return value1;
+            }
+        }
+
+        // jump if true
+        else if (opcode == 5) {
+            const value1 = readValue(integers, mode1, integers[index + 1], base);
+            const value2 = readValue(integers, mode2, integers[index + 2], base);
+            index = value1 !== 0 ? value2 : index + 3;
+        }
+
+        // jump if false
+        else if (opcode == 6) {
+            const value1 = readValue(integers, mode1, integers[index + 1], base);
+            const value2 = readValue(integers, mode2, integers[index + 2], base);
+            index = value1 === 0 ? value2 : index + 3;
+        }
+
+        // less than
+        else if (opcode == 7) {
+            const value1 = readValue(integers, mode1, integers[index + 1], base);
+            const value2 = readValue(integers, mode2, integers[index + 2], base);
+            const value3 = getWriteIndex(integers, mode3, integers[index + 3], base);
+            integers[value3] = value1 < value2 ? 1 : 0;
+            index += 4;
+        }
+
+        // equal
+        else if (opcode == 8) {
+            const value1 = readValue(integers, mode1, integers[index + 1], base);
+            const value2 = readValue(integers, mode2, integers[index + 2], base);
+            const value3 = getWriteIndex(integers, mode3, integers[index + 3], base);
+            integers[value3] = value1 === value2 ? 1 : 0;
+            index += 4;
+        }
+
+        // change base
+        else if (opcode == 9) {
+            const value1 = readValue(integers, mode1, integers[index + 1], base);
+            base += value1;
+            index += 2;
+            config.base = base;
+        }
+
+        else if (opcode == 99) { // break
+            index = integers.length;
+            config.index = index;
         }
     }
+
     if (returnFirstInteger) {
         return integers[0];
-    } else if (returnOnOutput) {
+    }
+    else if (returnOnOutput) {
         return -1;
     }
     return outputs[outputs.length - 1];
 };
 
-const getInterval = instruction => {
-     if ([3,4,9].includes(instruction)) {
-        return 2;
-    } else if ([5,6].includes(instruction)) {
-        return 3
-    }
-    return 4;
-
-};
-
-const getValByMode = (integers, param, mode, base = 0) => {
-    if (mode === 1) {
+const readValue = (integers, mode, param, base = 0) => {
+    if (mode === IMMEDIATE) {
         return param;
-    }
-    if (mode === 2) {
-        return getVal(integers, param + base);
-    }
-    return getVal(integers, param);
-};
-
-const getVal = (arr, index) => arr[index] === undefined ? 0 : arr[index];
-
-const getInstructionAndModes = opt => {
-    const instruction = parseInt(opt.slice(opt.length - 2), 10);
-    const modes = opt.substring(0, opt.length - 2).split('').map(x => parseInt(x, 10));
-    return {
-        instruction,
-        modes
+    } else if (mode === RELATIVE) {
+        return integers[base + param] || 0;
+    } else {
+        return integers[param] || 0;
     }
 };
 
+const getWriteIndex = (integers, mode, param, base = 0) => {
+    if (mode === RELATIVE) {
+        return base + param;
+    } else {
+        return param
+    }
+};
 
 module.exports = {
     runIntCode
