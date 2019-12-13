@@ -14,10 +14,11 @@ const solve = input => {
     while (output !== -1) {
         const panelID = getID(panelX, panelY);
         const currentPaint = paintedMap[panelID] || 0;
-        output = runIntCode(config, [currentPaint]);
+        config.inputs = [currentPaint];
+        output = runIntCode(config);
         paintedMap[panelID] = output;
 
-        output = runIntCode(config, [currentPaint]);
+        output = runIntCode(config);
         const newDirs = getDirection(output, dirX, dirY);
         dirX = newDirs.dirX;
         dirY = newDirs.dirY;

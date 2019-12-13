@@ -2,13 +2,15 @@ const POSITION = 0
 const IMMEDIATE = 1;
 const RELATIVE = 2;
 
-const runIntCode = (config, inputs) => {
+const runIntCode = config => {
     let index = config.index;
     let integers = config.integers;
     let returnOnOutput = config.returnOnOutput;
     let returnFirstInteger = config.returnFirstInteger;
+    let inputs = config.inputs || [];
+    let exitCode = config.exitCode === undefined ? -1 : config.exitCode;
     const outputs = [];
-    let inputIndex = 0;
+    let inputIndex = config.inputIndex || 0;
     let base = config.base || 0;
 
     while (index < integers.length) {
@@ -43,6 +45,7 @@ const runIntCode = (config, inputs) => {
             if (inputIndex + 1 < inputs.length) {
                 inputIndex++;
             }
+            config.inputIndex = inputIndex;
             index += 2;
         }
 
@@ -107,7 +110,7 @@ const runIntCode = (config, inputs) => {
         return integers[0];
     }
     else if (returnOnOutput) {
-        return -1;
+        return exitCode;
     }
     return outputs[outputs.length - 1];
 };

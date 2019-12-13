@@ -8,7 +8,7 @@ const solve = input => {
             let integers = input[0].split(',').map(x => parseInt(x.trim(), 10));
             integers[1] = n;
             integers[2] = v;
-            if (runIntCode({integers, index: 0, returnFirstInteger: true}, []) === expected) {
+            if (runIntCode({integers, index: 0, returnFirstInteger: true}) === expected) {
                 break loop;
             }
         }

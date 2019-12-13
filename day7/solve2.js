@@ -20,8 +20,9 @@ const solveForSequence = (integers, sequence) => {
         configs.push({integers: integers.slice(), index: 0, returnOnOutput: true});
     }
     while (output !== -1) {
-        const inputs = lastInput === -1 ? [sequence[configIndex], output] : [output];
-        output = runIntCode(configs[configIndex], inputs);
+        configs[configIndex].inputs = lastInput === -1 ? [sequence[configIndex], output] : [output];
+        configs[configIndex].inputIndex = 0;
+        output = runIntCode(configs[configIndex]);
         if (configIndex === 4) {
             lastInput = output;
         }

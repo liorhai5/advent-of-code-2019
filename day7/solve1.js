@@ -28,7 +28,7 @@ const getPermutations = seq => {
 const solveForSequence = (integers, sequence) => {
     let lastInput = 0;
     for (let amp = 0; amp < 5; amp++) {
-        lastInput = runIntCode({integers, index: 0}, [sequence[amp], lastInput]);
+        lastInput = runIntCode({integers, index: 0, inputs: [sequence[amp], lastInput]});
     }
     return lastInput;
 };
