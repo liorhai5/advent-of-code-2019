@@ -23,7 +23,7 @@ const parseData = input => {
         store[reaction.product.name] = {
             reactions: reaction.reactions,
             amount: reaction.product.amount,
-            stored: 0
+            reminder: 0
         };
     }
     return store;
@@ -35,17 +35,17 @@ const getRequiredOres = (store, name, amountToMake) => {
     }
     let reaction = store[name];
 
-    if (reaction.stored > amountToMake){
-        reaction.stored -= amountToMake;
+    if (reaction.reminder > amountToMake){
+        reaction.reminder -= amountToMake;
         return 0;
     }
 
-    amountToMake -= reaction.stored;
+    amountToMake -= reaction.reminder;
     let reminder = reaction.amount - (amountToMake % reaction.amount);
     if(reminder === reaction.amount) {
         reminder = 0;
     }
-    reaction.stored = reminder;
+    reaction.reminder = reminder;
 
 
     let multiplayer = Math.ceil(amountToMake / reaction.amount);
