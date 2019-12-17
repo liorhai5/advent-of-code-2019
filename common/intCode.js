@@ -3,11 +3,13 @@ const IMMEDIATE = 1;
 const RELATIVE = 2;
 
 const runIntCode = config => {
-    let index = config.index;
+    let index = config.index || 0;
     let integers = config.integers;
     let returnOnOutput = config.returnOnOutput;
     let returnFirstInteger = config.returnFirstInteger;
+    let returnAllOutputs = config.returnAllOutputs;
     let inputs = config.inputs || [];
+    let requestInputFn = config.requestInputFn || null;
     let exitCode = config.exitCode === undefined ? -1 : config.exitCode;
     const outputs = [];
     let inputIndex = config.inputIndex || 0;
@@ -21,7 +23,7 @@ const runIntCode = config => {
         const mode3 = Number.parseInt(instruction.pop() || 0);
 
         // add
-        if (opcode == 1) {
+        if (opcode === 1) {
             const value1 = readValue(integers, mode1, integers[index + 1], base);
             const value2 = readValue(integers, mode2, integers[index + 2], base);
             const value3 = getWriteIndex(integers, mode3, integers[index + 3], base);
@@ -30,7 +32,7 @@ const runIntCode = config => {
         }
 
         // multiply
-        else if (opcode == 2) {
+        else if (opcode === 2) {
             const value1 = readValue(integers, mode1, integers[index + 1], base);
             const value2 = readValue(integers, mode2, integers[index + 2], base);
             const value3 = getWriteIndex(integers, mode3, integers[index + 3], base);
@@ -39,8 +41,12 @@ const runIntCode = config => {
         }
 
         // input
-        else if (opcode == 3) {
+        else if (opcode === 3) {
             const value1 = getWriteIndex(integers, mode1, integers[index + 1], base);
+            if (inputIndex >= inputs.length && requestInputFn) {
+                inputs = requestInputFn(outputs);
+                inputIndex = 0;
+            }
             integers[value1] = inputs[inputIndex];
             if (inputIndex + 1 < inputs.length) {
                 inputIndex++;
@@ -50,7 +56,7 @@ const runIntCode = config => {
         }
 
         // output
-        else if (opcode == 4) {
+        else if (opcode === 4) {
             const value1 = readValue(integers, mode1, integers[index + 1], base);
             outputs.push(value1);
             index += 2;
@@ -61,21 +67,21 @@ const runIntCode = config => {
         }
 
         // jump if true
-        else if (opcode == 5) {
+        else if (opcode === 5) {
             const value1 = readValue(integers, mode1, integers[index + 1], base);
             const value2 = readValue(integers, mode2, integers[index + 2], base);
             index = value1 !== 0 ? value2 : index + 3;
         }
 
         // jump if false
-        else if (opcode == 6) {
+        else if (opcode === 6) {
             const value1 = readValue(integers, mode1, integers[index + 1], base);
             const value2 = readValue(integers, mode2, integers[index + 2], base);
             index = value1 === 0 ? value2 : index + 3;
         }
 
         // less than
-        else if (opcode == 7) {
+        else if (opcode === 7) {
             const value1 = readValue(integers, mode1, integers[index + 1], base);
             const value2 = readValue(integers, mode2, integers[index + 2], base);
             const value3 = getWriteIndex(integers, mode3, integers[index + 3], base);
@@ -84,7 +90,7 @@ const runIntCode = config => {
         }
 
         // equal
-        else if (opcode == 8) {
+        else if (opcode === 8) {
             const value1 = readValue(integers, mode1, integers[index + 1], base);
             const value2 = readValue(integers, mode2, integers[index + 2], base);
             const value3 = getWriteIndex(integers, mode3, integers[index + 3], base);
@@ -93,14 +99,14 @@ const runIntCode = config => {
         }
 
         // change base
-        else if (opcode == 9) {
+        else if (opcode === 9) {
             const value1 = readValue(integers, mode1, integers[index + 1], base);
             base += value1;
             index += 2;
             config.base = base;
         }
 
-        else if (opcode == 99) { // break
+        else if (opcode === 99) { // break
             index = integers.length;
             config.index = index;
         }
@@ -111,6 +117,8 @@ const runIntCode = config => {
     }
     else if (returnOnOutput) {
         return exitCode;
+    } else if (returnAllOutputs) {
+        return outputs;
     }
     return outputs[outputs.length - 1];
 };

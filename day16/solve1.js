@@ -41,6 +41,5 @@ const multiplyPattern = (pattern, position) => {
 
 module.exports = {
     solve,
-    result: '96136976',
-    applyPatternToSignals
+    result: '96136976'
 };
